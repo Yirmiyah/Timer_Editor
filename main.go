@@ -11,7 +11,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-const ActivityTime = 1 //in minutes
+const ActivityTime = 30 //in minutes
 const rootFolder = "/home/omega"
 
 var TotalTimeArray []int64
@@ -43,7 +43,11 @@ func main() {
 
 				if !CheckIfModifiedEachN(ActivityTime) {
 					fmt.Println("You Haven't Modified Anything For", strconv.Itoa(ActivityTime), "Minutes")
-					TotalTimeArray = append(TotalTimeArray, lastModified-Starttime)
+					if time.Now().UnixNano()-lastModified > 60*60*1000000000 {
+						TotalTimeArray = append(TotalTimeArray, lastModified-Starttime)
+					} else {
+						TotalTimeArray = append(TotalTimeArray, time.Now().UnixNano()-Starttime)
+					}
 					SetStartingTime()
 					UpdateLastModified()
 					stop <- true
@@ -89,15 +93,16 @@ func main() {
 			}
 		}
 	}()
-	ticker := time.NewTicker(1 * time.Minute)
+	ticker := time.NewTicker(60 * time.Second)
 	for {
 		select {
 		case <-ticker.C:
 			total := int64(0)
 			for _, time := range TotalTimeArray {
 				total += time
+
 			}
-			fmt.Println("Total Time:", time.Duration(total).Minutes())
+			fmt.Println("Total Elapsed Time:", total/1000000000/60, "minutes")
 
 		}
 	}
@@ -105,7 +110,7 @@ func main() {
 func printElapsedTime(Starttime int64, lastModified *int64, stop chan bool) {
 	//start is equal to a pointer of the Starttime variable
 
-	ticker := time.NewTicker(30 * time.Second)
+	ticker := time.NewTicker(60 * time.Second)
 	defer ticker.Stop()
 
 	for {
