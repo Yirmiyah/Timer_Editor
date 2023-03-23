@@ -40,7 +40,7 @@ func main() {
 				if !ok {
 					return
 				}
-				
+
 				if !CheckIfModifiedEachN(ActivityTime) {
 					fmt.Println("You Haven't Modified Anything For", strconv.Itoa(ActivityTime), "Minutes")
 					TotalTimeArray = append(TotalTimeArray, lastModified-Starttime)
@@ -113,7 +113,7 @@ func printElapsedTime(Starttime int64, lastModified *int64, stop chan bool) {
 		lastModif := time.Unix(0, *lastModified)
 		select {
 		case <-ticker.C:
-			(lastModif)
+
 			elapsed := time.Since(start)
 			fmt.Printf("Elapsed time from start: %v\n", elapsed)
 			elapsed = time.Since(lastModif)
@@ -189,7 +189,7 @@ func CheckIfModifiedEachN(n int64) bool {
 		UpdateLastModified()
 		return true
 	}
-	(time.Now().UnixNano()-lastModified, "------------", n)
+
 	if time.Now().UnixNano()-lastModified < n {
 		UpdateLastModified()
 		return true
