@@ -12,7 +12,7 @@ import (
 )
 
 const ActivityTime = 30 //in minutes
-const rootFolder = "/home/omega"
+const rootFolder = "/home/student07/"
 
 var TotalTimeArray []int64
 
@@ -124,6 +124,17 @@ func printElapsedTime(Starttime int64, lastModified *int64, stop chan bool) {
 			elapsed = time.Since(lastModif)
 			fmt.Printf("Elapsed time from last modification: %v\n", elapsed)
 		case <-stop:
+			f, err := os.Open("/home/student07/Documents/Projets_Perso/Big_Projects/Timer_Editor/time_elapsed.txt")
+			if err != nil {
+				fmt.Println(err)
+			}
+			_, err = f.WriteString(strconv.Itoa(int(time.Since(start).Minutes())))
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			//os.WriteFile("/home/student07/Documents/Projets_Perso/Big_Projects/Timer_Editor/time_elapsed.txt", []byte(strconv.Itoa(int(time.Since(start).Seconds()))), 0644)
+			defer f.Close()
 			return
 		}
 	}
